@@ -5,10 +5,12 @@ import com.caveofprogramming.spring.web.repository.RoleRepository;
 import com.caveofprogramming.spring.web.repository.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -32,4 +34,9 @@ public class UserServiceImpl implements UserService {
     public User findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
+    
+    @Secured("ROLE_ADMIN")
+	public List<User> getAllUsers() {
+		return userRepository.findAll();
+	}
 }

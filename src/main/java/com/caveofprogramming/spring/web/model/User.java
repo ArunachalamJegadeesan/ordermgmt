@@ -33,8 +33,14 @@ public class User {
 	private String email;
     
     private Set<Role> roles;
+    
+    private boolean enabled = false;
+    
+    //private String authority;
+	
+    
 
-    @Id
+	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     public Long getId() {
         return id;
@@ -84,4 +90,21 @@ public class User {
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
+    
+    public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+	
+	/*public String getAuthority() {
+		return authority;
+	}
+
+	public void setAuthority(String authority) {
+		this.authority = authority;
+	}*/
+
 }
