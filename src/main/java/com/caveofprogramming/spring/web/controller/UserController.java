@@ -7,6 +7,8 @@ import com.caveofprogramming.spring.web.validator.UserValidator;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,6 +27,8 @@ public class UserController {
 
 	@Autowired
 	private UserValidator userValidator;
+	
+	Logger logger = LoggerFactory.getLogger(UserController.class);
 
 	@RequestMapping(value = "/newaccount", method = RequestMethod.GET)
 	public String registration(Model model) {
@@ -35,29 +39,29 @@ public class UserController {
 
 	@RequestMapping(value = "/newaccount", method = RequestMethod.POST)
 	public String registration(@ModelAttribute("userForm") User userForm, BindingResult bindingResult, Model model) {
-		System.out.println("inside new account>>>>");
+		logger.debug("inside new account>>>>");
 
 		userValidator.validate(userForm, bindingResult);
-		System.out.println("Inside registration>>>>");
+		logger.debug("Inside registration>>>>");
 		if (bindingResult.hasErrors()) {
 			return "newaccount";
 		}
 
 		userForm.setEnabled(true);
 
-		System.out.println("before save registration>>>>");
+		logger.debug("before save registration>>>>");
 		userService.save(userForm);
-		System.out.println("after save registration>>>>");
+		logger.debug("after save registration>>>>");
 
 		securityService.autologin(userForm.getUsername(), userForm.getPasswordConfirm());
-		System.out.println("last  registration>>>>");
+		logger.debug("last  registration>>>>");
 
 		return "redirect:/accountcreated";
 	}
 
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public String login(Model model, String error, String logout) {
-		System.out.println("Inside login>>>>>");
+		logger.debug("Inside login>>>>>");
 		if (error != null)
 			model.addAttribute("error", "Your username and password is invalid.");
 
@@ -69,21 +73,21 @@ public class UserController {
 
 	@RequestMapping(value = "/accountcreated", method = RequestMethod.GET)
 	public String accountCreated(Model model) {
-		System.out.println("Inside accountcreated>>>>>");
+		logger.debug("Inside accountcreated>>>>>");
 		return "accountcreated";
 
 	}
 
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String welcome(Model model) {
-		System.out.println("Inside welcome>>>>>");
+		logger.debug("Inside welcome>>>>>");
 		// return "accountcreated";
 		return "home";
 	}
 
 	@RequestMapping(value = { "/logout" }, method = RequestMethod.GET)
 	public String exit(Model model) {
-		System.out.println("Inside logout>>>>>");
+		logger.debug("Inside logout>>>>>");
 		return "login";
 
 	}

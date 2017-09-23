@@ -12,6 +12,10 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,11 +31,12 @@ public class OfferController {
 	//@Autowired
 	//private UserValidator userValidator;
 	
-	
+	Logger logger = LoggerFactory.getLogger(OfferController.class);
 	
 	@RequestMapping(value = "/createoffer", method = RequestMethod.GET)
 	public String createOffer(Model model) {
-		System.out.println("inside createOffer>>>>");
+		
+		logger.debug("inside createOffer>>>>");
 		model.addAttribute("offerForm", new Offer());
 
 		return "createoffer";
@@ -39,18 +44,17 @@ public class OfferController {
 
 	@RequestMapping(value = "/docreate", method = RequestMethod.POST)
 	public String doCreate( @ModelAttribute("offerForm") Offer offerForm,Model model,BindingResult bindingResult) {
-		System.out.println("inside new Offer>>>>");
-
+		
+		logger.debug("inside new Offer>>>>");
 		RestTemplate restTemplate = new RestTemplate();
 		restTemplate.postForLocation(System.getenv("offerservice.endpoint"),offerForm);
-		//userValidator.validate(offerForm, bindingResult);
-		System.out.println("afterValidation createOffer>>>>");
+		
+	
 		if (bindingResult.hasErrors()) {
 			return "createoffer";
 		}		
 		//userService.save(offerForm);
-		System.out.println("after save offer>>>>");
-
+		logger.debug("after save offer>>>>");
 
 		return "redirect:/offercreated";
 	}
@@ -58,24 +62,22 @@ public class OfferController {
 	
 	@RequestMapping(value = "/offercreated", method = RequestMethod.GET)
 	public String offerCreated(Model model) {
-		System.out.println("Inside offercraeted>>>>>");
+		logger.debug("Inside offercraeted>>>>>");
+		
 		return "offercreated";
 
 	}
 	
 	@RequestMapping(value = "/offers", method = RequestMethod.GET)
 	public String showOffers(Model model) {
-		System.out.println("Inside showOffers>>>>>"+System.getenv("offerservice.endpoint"));
+		
+		logger.debug("Inside showOffers>>>>>"+System.getenv("offerservice.endpoint"));
 		
 		
 		RestTemplate restTemplate = new RestTemplate();
 		Offer[] offers=  restTemplate.getForObject(System.getenv("offerservice.endpoint"), Offer[].class);
 	
-		/*
-		List<Offer> offers = new ArrayList<Offer>(offersa);
-		offers.add(new Offer("Free","ddhara10@gmail.com","abcd"));
-		offers.add(new Offer("cost","dhanu@gmail.com","WXY"));
-		*/
+		
 		model.addAttribute("offers", offers);
 		
 		return "offers";
